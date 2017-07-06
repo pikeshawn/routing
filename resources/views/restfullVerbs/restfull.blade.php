@@ -23,22 +23,26 @@
     </form>
     <h1>Put Restfull Verb</h1>
     <form action="/bar" method="Post">
-        {{ csrf_field() }}
+        <input type="hidden" name="_method" value="PUT">
+        <input type="hidden" name="_token" value="{{ csrf_token() }}">
         <button class="btn btn-default btn-primary" type="submit">Put Verb</button>
     </form>
     <h1>Patch Restfull Verb</h1>
-    <form action="/bar" method="Patch">
+    <form action="/bar" method="post">
         {{ csrf_field() }}
+        {{ method_field('Patch') }}
         <button class="btn btn-default btn-primary" type="submit">Patch Verb</button>
     </form>
     <h1>Delete Restfull Verb</h1>
-    <form action="/bar" method="Delete">
+    <form action="/bar" method="post">
         {{ csrf_field() }}
+        {{ method_field('delete') }}
         <button class="btn btn-default btn-primary" type="submit">Delete Verb</button>
     </form>
     <h1>Options Restfull Verb</h1>
-    <form action="/bar" method="Options">
+    <form action="/bar" method="post">
         {{ csrf_field() }}
+        {{ method_field('options') }}
         <button class="btn btn-default btn-primary" type="submit">Options Verb</button>
     </form>
 </div>

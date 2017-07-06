@@ -15,14 +15,9 @@ use Illuminate\Http\RedirectResponse;
 
 // Basic Routing
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', 'Basic\BasicController@basic');
 
-Route::get('foo', function () {
-    return 'Hello World';
-//    return ["k1"=>"v1","k2"=>"v2"];
-});
+Route::get('foo', 'BasicController@foo');
 
 // Restfull verbs
 
@@ -31,29 +26,15 @@ $uri = '/bar';
 //  return "foo bar forever";
 //};
 
-Route::get($uri, function (){
-    return "Get";
-});
-Route::post($uri, function (){
-    return "Post";
-});
-Route::put($uri, function (){
-    return "Put";
-});
-Route::patch($uri, function (){
-    return "Patch";
-});
-Route::delete($uri, function (){
-    return "delete";
-});
-Route::options($uri, function (){
-    return "options";
-});
+Route::get($uri, 'RestfulController@get');
+Route::post($uri, 'RestfulController@post');
+Route::put($uri, 'RestfulController@put');
+Route::patch($uri, 'RestfulController@patch');
+Route::delete($uri, 'RestfulController@delete');
+Route::options($uri, 'RestfulController@options');
 
 
-Route::get('restfull', function() {
-    return view('restfullVerbs.restfull');
-});
+Route::get('restfull', 'RestfulController@index');
 
 // clumping verbs together
 
@@ -64,20 +45,47 @@ Route::get('restfull', function() {
 
 // Passing parameters
 
-Route::get('user/{id}', function ($id) {
-    return 'User '.$id;
-});
+Route::get('user/{id}', 'UserController@show');
 
-Route::get('posts/{post}/comments/{comment}', function ($postId, $commentId) {
-    //
-    return "$postId : $commentId";
-});
+Route::get('posts/{post}/comments/{comment}', 'UserController@postComments');
 
 // optional parameters
 
-Route::get('username/{name?}', function ($name = null) {
-    return $name;
-});
+Route::get('username/{name?}', 'UsernameController');
+
+
+// resources
+Route::get(     '/photos',               'PhotoController@index');
+Route::get(     '/photos/create',        'PhotoController@create');
+Route::post(    '/photos',               'PhotoController@store');
+Route::get(     '/photos/{photo}',       'PhotoController@show');
+Route::get(     '/photos/{photo}/edit',  'PhotoController@edit');
+Route::put(     '/photos/{photo}',       'PhotoController@update');
+Route::delete(  '/photos/{photo}',       'PhotoController@destroy');
+
+Route::resource('photos', 'PhotoController');
+
+// only certain methods
+Route::resource('photo', 'PhotoController', ['only' => [
+    'index', 'show'
+]]);
+
+Route::resource('photo', 'PhotoController', ['except' => [
+    'create', 'store', 'update', 'destroy'
+]]);
+
+// change route names
+Route::resource('photo', 'PhotoController', ['names' => [
+    'create' => 'photo.build'
+]]);
+
+// change parameter names
+Route::resource('user', 'AdminUserController', ['parameters' => [
+    'user' => 'admin_user'
+]]);
+
+// change uri verbs
+
 
 // Regular Expression Constraints
 
@@ -115,7 +123,7 @@ Route::get('user/profile', function () {
 
 Route::get('user/profileRedirect', function () {
     //
-    return redirect('bar');
+    return redirect('profile');
 });
 
 // sub Domain
@@ -140,7 +148,7 @@ Route::prefix('admin')->group(function () {
 
 Route::get('routeInfo', function(){
     $route = Route::current();
-    dd($route);
+    dd($route->uri);
 });
 
 
